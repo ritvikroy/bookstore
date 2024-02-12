@@ -9,6 +9,10 @@ import (
 type SignInService struct {
 }
 
+func NewSignInService() *SignInService {
+	return &SignInService{}
+}
+
 // SignIn performs user authentication.
 func (ss *SignInService) SignIn(request model.SignInRequest) (*model.SignInResponse, error) {
 	isValidCredentials := ss.authenticateUser(request.Username, request.Password)
