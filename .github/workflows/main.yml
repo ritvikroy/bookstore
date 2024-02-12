@@ -43,7 +43,6 @@ jobs:
           cache: "npm"
       - name: Build frontend
         uses: actions/checkout@v3
-        uses: actions/setup-node@v4
         with:
           working-directory: frontend
           node-version: "21.5.0"
