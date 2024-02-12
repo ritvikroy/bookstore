@@ -1,33 +1,35 @@
 package db
 
 import (
+	"context"
 	"fmt"
 
+	"database/sql"
+
 	_ "github.com/godror/godror"
-	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
-func buildDbDescriptiveConnString() string {
-	dbPasswordKey := "password"
-	dbSourceName := fmt.Sprintf("user=%s password=\"%s\" connectString=\"(DESCRIPTION=(CONNECT_DATA=(SERVICE_NAME=%s))(ADDRESS=(PROTOCOL=tcp)(HOST=%s)(PORT=%v)))\"",
-		"bookstorej",
-		dbPasswordKey,
-		"XEPDB1",
-		"localhost",
-		1521)
-	fmt.Println("dbSourceName: ", dbSourceName)
-	return dbSourceName
+func BuildDbDescriptiveConnString() string {
+	dbPasswordKey := "postgres"
+	dbName := "bookshop-db"
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		"localhost", 5432, "postgres", dbPasswordKey, dbName)
+	fmt.Println("dbSourceName: ", psqlInfo)
+	return psqlInfo
 }
 
-func InitDB() (*sqlx.DB, error) {
-	db, err := sqlx.Connect("pgx", buildDbDescriptiveConnString())
-	if err != nil {
-		fmt.Println("error", err)
-		return nil, err
+func InitDb(ctxt context.Context, dbSourceName string) (*sql.Conn, error) {
+	dbClient, dbError := sql.Open("postgres", dbSourceName)
+	if dbError != nil {
+		fmt.Println("Db is not able to open", dbError)
+		return nil, dbError
 	}
-	if err := db.Ping(); err != nil {
-		return nil, err
+	dbConection, dbError := dbClient.Conn(ctxt)
+	if dbError != nil {
+		fmt.Println("Db is not able to connect", dbError)
+		return nil, dbError
 	}
-	fmt.Println("Db connected Successfully")
-	return db, nil
+	return dbConection, nil
 }

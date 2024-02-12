@@ -3,12 +3,13 @@ package router
 import (
 	"bookstore-api/controllers"
 	"bookstore-api/service"
+	"database/sql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAllRoutes() *gin.Engine {
+func RegisterAllRoutes(db *sql.Conn) *gin.Engine {
 	userService := service.NewUserService()
 	signInService := service.NewSignInService()
 	appEngine := gin.Default()
