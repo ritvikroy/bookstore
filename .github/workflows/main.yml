@@ -42,11 +42,5 @@ jobs:
           working-directory: frontend
           node-version: "21.5.0"
           cache: "npm"
-      - name: Build frontend
-        uses: actions/checkout@v3
-        with:
-          node-version: "21.5.0"
-          cache: "npm"
-        run: |
-          npm ci
-          npm start
+      - run: npm ci
+      - run: npm start
