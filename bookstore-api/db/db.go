@@ -6,7 +6,6 @@ import (
 
 	"database/sql"
 
-	_ "github.com/godror/godror"
 	_ "github.com/lib/pq"
 )
 
