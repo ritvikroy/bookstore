@@ -5,30 +5,41 @@ name: BookStore
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
 
-    - name: Build
-      run: CGO_ENABLED=0 GOARCH=arm64 GOOS=darwin go build -C bookstore-api
+      - name: Build
+        run: CGO_ENABLED=0 GOARCH=arm64 GOOS=darwin go build -C bookstore-api
 
-    - name: Test
-      run: go test -C bookstore-api
+      - name: Test
+        run: go test -C bookstore-api
 
-    - name: upload artifact
-      uses: actions/upload-artifact@v3
-      with: 
-        name: bookstore-api
-        path: bookstore-api/bookstore-api
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bookstore-api
+          path: bookstore-api/bookstore-api
+  frontend-build:
+    runs-on: ubuntu-latest
+    working-directory: frontend
+    steps:
+      - name: Build frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: "21.5.0"
+          cache: "npm"
+        run: |
+          npm ci
+          npm start
