@@ -40,9 +40,8 @@ jobs:
           node-version: "21.5.0"
           cache: "npm"
       - name: Build frontend
-        uses: actions/setup-node@v3
         with:
-          working-directory: ./frontend
+          working-directory: frontend
           node-version: "21.5.0"
           cache: "npm"
         run: |
