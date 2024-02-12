@@ -35,8 +35,12 @@ jobs:
     runs-on: ubuntu-latest
     working-directory: frontend
     steps:
-      - name: Build frontend
+      - name: Use node 21.5.0
         uses: actions/setup-node@v4
+        with:
+          node-version: "21.5.0"
+          cache: "npm"
+      - name: Build frontend
         with:
           node-version: "21.5.0"
           cache: "npm"
