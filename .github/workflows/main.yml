@@ -26,3 +26,9 @@ jobs:
 
     - name: Test
       run: go test -C bookstore-api
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with: 
+        name: bookstore-api
+        path: build/libs/bookstore-api
