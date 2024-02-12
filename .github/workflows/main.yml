@@ -25,4 +25,4 @@ jobs:
       run: go build -C bookstore-api
 
     - name: Test
-      run: go test -v ./...
+      run: go test -C bookstore-api
