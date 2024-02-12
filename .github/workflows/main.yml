@@ -34,6 +34,8 @@ jobs:
   frontend-build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Use node 21.5.0
         uses: actions/setup-node@v4
         with:
