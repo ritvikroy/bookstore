@@ -38,9 +38,11 @@ jobs:
 
       - name: Use node 16.14.0
         uses: actions/setup-node@v4
-        working-directory: frontend
         with:
           node-version: "16.14.0"
           cache: "npm"
-      - run: npm ci
-      - run: npm start
+      - name: npm install & start
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm start
