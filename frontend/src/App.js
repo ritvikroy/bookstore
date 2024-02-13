@@ -1,16 +1,22 @@
+import React from 'react';
+import {BrowserRouter,Route, Switch} from "react-router-dom";
+import SignIn from './components/Auth/SignIn'
+import BooksList from './components//BooksList/BooksList';
 import "./App.css";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import SignIn from "./components/Auth/SignIn";
+
 
 function App() {
   return (
-    <div className="App" data-testid="home">
-      <BrowserRouter>
+    <BrowserRouter>
+    <React.StrictMode>
+      <div className="App" data-testid="home">
         <Switch>
-          <Route path="/" component={SignIn} />
+          <Route path="/" exact component={SignIn}/>
+          <Route path="/books" component={BooksList}/>
         </Switch>
-      </BrowserRouter>
-    </div>
+      </div>
+         </React.StrictMode>
+         </BrowserRouter>
   );
 }
 

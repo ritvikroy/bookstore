@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from 'react-router';
 import "./SignIn.css";
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [, setSubmittedData] = useState(null);
+  const history = useHistory();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +22,7 @@ const SignIn = () => {
     setSubmittedData({ username, password });
     setUsername("");
     setPassword("");
+    history.push("/books");
   };
 
   return (
@@ -47,7 +50,7 @@ const SignIn = () => {
             onChange={handleInputChange}
           />
         </div>
-        <button type="submit" data-testid="submit-btn">
+        <button type="submit" disabled={!username || !password} data-testid="submit-btn" style={{opacity: !username || !password ? "0.5": "1"}}>
           Sign In
         </button>
       </form>
