@@ -23,7 +23,7 @@ func main() {
 	}
 	//appEngine := router.RegisterAllRoutes(db)
 	appEngine := gin.Default()
-	appEngine.StaticFS("/", http.Dir("./static"))
+	appEngine.StaticFS("/", http.Dir("../frontend/build"))
 
 	appEngine.Run("localhost:8080")
 
