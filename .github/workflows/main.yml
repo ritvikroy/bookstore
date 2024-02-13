@@ -26,6 +26,9 @@ jobs:
       - name: Test
         run: go test -C bookstore-api
 
+      - name: Coverage
+        run: go test -C bookstore-api --cover
+
       # - name: upload artifact
       #   uses: actions/upload-artifact@v3
       #   with:
