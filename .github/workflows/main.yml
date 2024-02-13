@@ -10,7 +10,28 @@ on:
     branches: ["main"]
 
 jobs:
+  frontend-build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Use node 16.14.0
+          uses: actions/setup-node@v4
+          with:
+            node-version: "16.14.0"
+            cache: "npm"
+        - name: npm install & build
+          working-directory: ./frontend
+          run: |
+            npm ci
+            npm run build
+        - name: run test
+          working-directory: ./frontend
+          run: |
+            npm run coverage
+
   build:
+    needs: frontend-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,6 +47,7 @@ jobs:
       - name: Test
         run: go test -C bookstore-api
 
+<<<<<<< Updated upstream
       - name: Coverage
         run: go test -C bookstore-api --cover
 
@@ -41,32 +63,13 @@ jobs:
       #     name: bookstore-api
       #     path: bookstore-api/static
       
+=======
+>>>>>>> Stashed changes
       - name: 'Make tar file'
-        run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api bookstore-api/static
+        run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api frontend/build
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
           name: bookstore-api
-          path: bookstore-api.tar
-
-
-  frontend-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use node 16.14.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: "16.14.0"
-          cache: "npm"
-      - name: npm install & build
-        working-directory: ./frontend
-        run: |
-          npm ci
-          npm run build
-      - name: run test
-        working-directory: ./frontend
-        run: |
-          npm run coverage
+          path: bookstore-api.tar  
