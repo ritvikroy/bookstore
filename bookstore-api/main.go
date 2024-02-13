@@ -23,7 +23,6 @@ func main() {
 	// db, err := db.InitDb(context.TODO(), connectionString)
 	if err != nil {
 		fmt.Errorf("error occured %s", err)
-		return
 	}
 
 	appEngine := router.RegisterAllRoutes()
