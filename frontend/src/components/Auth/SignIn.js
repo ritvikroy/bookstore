@@ -4,7 +4,7 @@ import "./SignIn.css";
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [submittedData, setSubmittedData] = useState(null);
+  const [, setSubmittedData] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
