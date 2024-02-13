@@ -45,10 +45,14 @@ jobs:
         run: CGO_ENABLED=0 GOARCH=arm64 GOOS=darwin go build -C bookstore-api
 
       - name: Test
-        run: go test -C bookstore-api
-
-      - name: Coverage
-        run: go test -C bookstore-api --cover
+        run: |
+          go test -C bookstore-api
+          COVERAGE=$(go test -C bookstore-api --coverprofile=coverage.txt | grep "coverage: " | sed -E 's/^coverage: ([0-9.]+)% of statements$/\1/')
+          echo "Code coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE <= 0" | bc -l) )); then
+            echo "Code coverage is below threshold"
+            exit 1
+          fi
 
       - name: 'Give all permission'
         run: chmod 777 bookstore-api/bookstore-api
