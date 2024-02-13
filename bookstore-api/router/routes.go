@@ -16,7 +16,7 @@ func RegisterAllRoutes() *gin.Engine {
 		authRoutes.Use(middlewareFunc)
 		signInController := controllers.NewSignInController(signInService)
 
-		appEngine.POST("/api/signin", signInController.HandleSignIn)
+		authRoutes.POST("/api/signin", signInController.HandleSignIn)
 
 	}
 
