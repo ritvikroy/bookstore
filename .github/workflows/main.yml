@@ -50,18 +50,9 @@ jobs:
       - name: Coverage
         run: go test -C bookstore-api --cover
 
-      # - name: upload artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: bookstore-api
-      #     path: bookstore-api/bookstore-api
-
-      # - name: upload artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: bookstore-api
-      #     path: bookstore-api/static
-      
+      - name: 'Give all permission'
+        run: chmod 777 bookstore-api/bookstore-api
+        
       - name: 'Make tar file'
         run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api frontend/build
 
