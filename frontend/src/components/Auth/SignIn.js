@@ -10,7 +10,7 @@ const SignIn = () => {
     const { name, value } = e.target;
     if (name === "username") {
       setUsername(value);
-    } else if (name === "password") {
+    } else {
       setPassword(value);
     }
   };

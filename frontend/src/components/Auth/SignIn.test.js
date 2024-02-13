@@ -18,9 +18,7 @@ test("should able to enter username input",() => {
     const userNameInput = screen.getByTestId("username-input");
     fireEvent.change(userNameInput, { target: { value: 'tushar' } });
     expect(userNameInput).toHaveValue('tushar');
-    expect(userNameInput).toBeInTheDocument();
 });
-
 
 test("should render password input",() => {
     render(<SignIn />);
@@ -30,8 +28,27 @@ test("should render password input",() => {
     expect(passwordInput).toBeInTheDocument();
 });
 
+test("should able to enter password input",() => {
+    render(<SignIn />);
+    const passwordInput = screen.getByTestId("password-input");
+    fireEvent.change(passwordInput, { target: { value: 'tushar' } });
+    expect(passwordInput).toHaveValue('tushar');
+});
+
 test("should render submit btn input",() => {
     render(<SignIn />);
     const linkElement = screen.getByTestId("submit-btn");
     expect(linkElement).toBeInTheDocument();
+});
+
+test('should call handleSubmit when username and password submitted', () => {
+    render(<SignIn />);
+    const userNameInput = screen.getByTestId("username-input");
+    fireEvent.change(userNameInput, { target: { value: 'tushar' } });
+    const passwordInput = screen.getByTestId("password-input");
+    fireEvent.change(passwordInput, { target: { value: 'tushar' } });
+    const submitButton = screen.getByTestId("submit-btn");
+    fireEvent.click(submitButton);
+    expect(userNameInput).toHaveValue('');
+    expect(passwordInput).toHaveValue('');
 });
