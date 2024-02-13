@@ -47,7 +47,6 @@ jobs:
       - name: Test
         run: go test -C bookstore-api
 
-<<<<<<< Updated upstream
       - name: Coverage
         run: go test -C bookstore-api --cover
 
@@ -63,8 +62,6 @@ jobs:
       #     name: bookstore-api
       #     path: bookstore-api/static
       
-=======
->>>>>>> Stashed changes
       - name: 'Make tar file'
         run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api frontend/build
 
