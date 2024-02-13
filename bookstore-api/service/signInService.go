@@ -33,6 +33,10 @@ func (ss *SignInService) authenticateUser(username, password string) bool {
 }
 
 func (ss *SignInService) generateToken(request model.SignInRequest) (string, error) {
+	if request.Username == "" || request.Password == "" {
+		return "", errors.New("Invalid request for token generation")
+	}
+
 	token := base64.StdEncoding.EncodeToString([]byte(request.Username + request.Password))
 	return token, nil
 }
