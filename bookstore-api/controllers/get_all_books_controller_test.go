@@ -53,6 +53,7 @@ func (suite *BooksControllerTestSuite) TestViewAllEmptyBooks() {
 	}
 	exp, _ := json.Marshal(expected)
 	suite.context.Request = httptest.NewRequest(http.MethodGet, "/api/books", nil)
+	suite.booksMockRepo.EXPECT().GetAllBooks(suite.context,"",0,0).Return(expected.Books,nil).Times(1)
 	suite.controller.GetAllBooks(suite.context)
 
 	suite.Equal(string(exp), suite.recorder.Body.String())
