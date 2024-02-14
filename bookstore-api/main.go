@@ -5,8 +5,8 @@ import (
 	"bookstore-api/router"
 	"context"
 	"fmt"
-	"net/http"
 
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
@@ -22,7 +22,7 @@ func main() {
 		fmt.Errorf("error occured %s", err)
 	}
 	appEngine := gin.Default()
-	appEngine.StaticFS("/", http.Dir("../frontend/build"))
+	appEngine.Use(static.Serve("/", static.LocalFile("../frontend/build", true)))
 	router.RegisterAllRoutes(dbConnection, appEngine)
 	appEngine.Run("localhost:8080")
 

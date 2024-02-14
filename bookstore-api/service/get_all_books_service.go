@@ -23,7 +23,7 @@ func NewBooksService(repo repository.BookStoreRepository) BookStoreService {
 
 func (b bookstoreService) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) (error, model.AllBooks) {
 	books := make([]model.Books, 0)
-	err, books := b.repository.GetAllBooks(ctx, pageSize, pageSize)
+	err, books := b.repository.GetAllBooks(ctx, searchText, pageSize, pageSize)
 	if err != nil {
 		return errors.New("some error occures"), model.AllBooks{}
 	}
