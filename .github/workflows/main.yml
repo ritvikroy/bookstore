@@ -59,8 +59,8 @@ jobs:
             cache: "npm"
 
       - name: npm install & build
-          working-directory: ./frontend
-          run: |
+        working-directory: ./frontend
+        run: |
             npm ci
             npm run build
 
