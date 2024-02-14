@@ -21,15 +21,26 @@ func NewBooksRepository(dbConnection *sql.DB) BookStoreRepository {
 }
 
 const (
-	GetAllBooks = `select * from books`
+	GetAllBooks    = `select * from books`
+	SearchBookText = `like '%' || $1 || '%'`
+	paginatedBooks = ` limit $1 `
 )
 
 func (b bookStoreRepository) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) (error, []model.Books) {
-	fmt.Println(" ----- bookStoreRepository")
+	fmt.Println(" ----- bookStoreRepository", searchText)
+	var rows *sql.Rows
+	var err error
 	var books = make([]model.Books, 0)
-	rows, err := b.dbConnection.Query(GetAllBooks)
+	if searchText != "" {
+		rows, err = b.dbConnection.Query(GetAllBooks+" where name "+SearchBookText, searchText)
+	} else if pageSize != 0 {
+		rows, err = b.dbConnection.Query(paginatedBooks, pageSize)
+	} else {
+		rows, err = b.dbConnection.Query(GetAllBooks)
+	}
+
 	if err != nil {
-		fmt.Println("Error in getting the row")
+		fmt.Println("Error in getting the row", err)
 	}
 
 	defer func() {

@@ -37,7 +37,7 @@ func (suite *BooksControllerTestSuite) SetupTest() {
 	suite.recorder = httptest.NewRecorder()
 	suite.context, _ = gin.CreateTestContext(suite.recorder)
 	// suite.db, _ = mocks
-	suite.booksRepo = mocks.MockBookStoreRepository
+	suite.booksRepo = *mocks.NewMockBookStoreRepository()
 	suite.goContext = context.TODO()
 	suite.service = service.NewBooksService(suite.ctrl)
 	suite.controller = NewGetAllBooks(suite.service)

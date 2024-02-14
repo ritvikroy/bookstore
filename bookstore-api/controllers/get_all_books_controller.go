@@ -24,18 +24,25 @@ func NewGetAllBooks(service service.BookStoreService) BooksController {
 }
 
 func (b booksController) GetAllBooks(ctx *gin.Context) {
+	var pageNumInt, pageSizeInt int
+	var err error
 	searchQuery, _ := ctx.GetQuery("searchText")
 	pageSize, _ := ctx.GetQuery("page_size")
 	pageNum, _ := ctx.GetQuery("page_num")
-	pageSizeInt, err := strconv.Atoi(pageSize)
-	if err != nil {
-		fmt.Println("error converting string to int")
-		return
+	fmt.Println(pageNum, pageSize)
+	if pageSize != "" {
+		pageSizeInt, err = strconv.Atoi(pageSize)
+		if err != nil {
+			fmt.Println("error converting  pageSizeInt string to int")
+			return
+		}
 	}
-	pageNumInt, err := strconv.Atoi(pageNum)
-	if err != nil {
-		fmt.Println("error converting string to int")
-		return
+	if pageNum != "" {
+		pageNumInt, err = strconv.Atoi(pageNum)
+		if err != nil {
+			fmt.Println("error converting pageNum string to int")
+			return
+		}
 	}
 	fmt.Println("Method: Controller : GetAllBooks")
 	err, allBooks := b.service.GetAllBooks(ctx, searchQuery, pageSizeInt, pageNumInt)
