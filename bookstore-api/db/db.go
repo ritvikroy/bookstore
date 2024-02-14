@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-
 	"database/sql"
 	"fmt"
 
@@ -12,7 +11,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InitDb(ctxt context.Context) (*sql.Conn, error) {
+func InitDb(ctxt context.Context ) (*sql.Conn, error) {
 
 	dbConnection, dbError := DbConnection(ctxt)
 	if dbError != nil {
@@ -32,6 +31,7 @@ func DbConnection(ctxt context.Context) (*sql.DB, error) {
 		fmt.Println("dbOpenErr is", dbOpenErr)
 		return nil, dbOpenErr
 	}
+	fmt.Println("db connected")
 	return dbOpen, nil
 }
 
