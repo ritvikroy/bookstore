@@ -45,9 +45,11 @@ func (b booksController) GetAllBooks(ctx *gin.Context) {
 		}
 	}
 	fmt.Println("Method: Controller : GetAllBooks")
-	err, allBooks := b.service.GetAllBooks(ctx, searchQuery, pageSizeInt, pageNumInt)
+	allBooks,err:= b.service.GetAllBooks(ctx, searchQuery, pageSizeInt, pageNumInt)
 	if err != nil {
-		ctx.Status(http.StatusBadRequest)
+		fmt.Printf("error occured : %v", err)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, allBooks)

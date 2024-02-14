@@ -11,11 +11,11 @@ type bookStoreRepository struct {
 	dbConnection *sql.DB
 }
 type BookStoreRepository interface {
-	GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) (error, []model.Books)
+	GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books,error)
 }
 
 func NewBooksRepository(dbConnection *sql.DB) BookStoreRepository {
-	return bookStoreRepository{
+	return &bookStoreRepository{
 		dbConnection: dbConnection,
 	}
 }
@@ -26,7 +26,7 @@ const (
 	paginatedBooks = ` limit $1 `
 )
 
-func (b bookStoreRepository) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) (error, []model.Books) {
+func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books, error) {
 	fmt.Println(" ----- bookStoreRepository", searchText)
 	var rows *sql.Rows
 	var err error
@@ -56,5 +56,5 @@ func (b bookStoreRepository) GetAllBooks(ctx context.Context, searchText string,
 		}
 		books = append(books, book)
 	}
-	return nil, books
+	return books,nil
 }
