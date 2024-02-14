@@ -20,18 +20,12 @@ jobs:
           with:
             node-version: "16.14.0"
             cache: "npm"
-        - name: npm install & build
-          working-directory: ./frontend
-          run: |
-            npm ci
-            npm run build
         - name: run test
           working-directory: ./frontend
           run: |
             npm run coverage >> $GITHUB_STEP_SUMMARY
 
-  build:
-    needs: frontend-build
+  backend-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,11 +42,36 @@ jobs:
         run: |
           go test -C bookstore-api
           COVERAGE= go test -C bookstore-api ./... --cover
-#          if (( $(echo "$COVERAGE <= 0" | bc -l) )); then
-#            echo "Code coverage is below threshold"
-#            exit 1
-#          fi
+          echo "Code coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE <= 0" | bc -l) )); then
+            echo "Code coverage is below threshold"
+            exit 1
+          fi
 
+  package:
+    needs : [frontend-build,backend-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use node 16.14.0
+          uses: actions/setup-node@v4
+          with:
+            node-version: "16.14.0"
+            cache: "npm"
+
+      - name: npm install & build
+          working-directory: ./frontend
+          run: |
+            npm ci
+            npm run build
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+
+      - name: Build
+        run: CGO_ENABLED=0 GOARCH=arm64 GOOS=darwin go build -C bookstore-api
+      
       - name: 'Give all permission'
         run: chmod 777 bookstore-api/bookstore-api
         
