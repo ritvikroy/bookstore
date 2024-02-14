@@ -1,8 +1,15 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import {ListOfBooks}  from './ListOfBooks';
 import './BooksList.css';
 
 const BooksList = () => {
+  const history = useHistory();
+
+  const handleBuy = (book) => {
+    history.push('/orderConfirmation',{book, isOrderPlaced: Math.random() > 0.5 ? true : false});
+  };
+
   return (
     <div className="book-list-container" data-testid="books-list">
       <table className="book-table">
@@ -17,9 +24,9 @@ const BooksList = () => {
           {ListOfBooks.map(book => (
             <tr key={book.id}>
               <td>{book.name}</td>
-              <td>Rs {book.price}</td>
+              <td>&#8377;{book.price}</td>
               <td>
-                <button>Buy</button>
+                <button data-testid={`${book.id}`} type='button' onClick={()=>handleBuy(book)}>Buy</button>
               </td>
             </tr>
           ))}

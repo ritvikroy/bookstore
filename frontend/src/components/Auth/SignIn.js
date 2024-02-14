@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useHistory } from 'react-router';
+import axios from "axios";
 import "./SignIn.css";
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [, setSubmittedData] = useState(null);
+  const [showInvalidLogin, setShowInvalidLogin] = useState();
   const history = useHistory();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setShowInvalidLogin("");
     if (name === "username") {
       setUsername(value);
     } else {
@@ -19,15 +21,24 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSubmittedData({ username, password });
-    setUsername("");
-    setPassword("");
-    history.push("/books");
+    loginCall().then((response)=>{
+      history.push("/books");
+    }).catch(()=>{
+      setShowInvalidLogin("User is Unauthorized");
+    });
+  };
+
+  const loginCall = async () => {
+    return axios.post("http://localhost:8080/v1/api/signin", {
+      username: username,
+      password: password,
+    });
   };
 
   return (
     <div className="signin-container" data-testid="sign-in">
       <form className="signin-form" onSubmit={handleSubmit}>
+        {showInvalidLogin && (<div className="inline-error" data-testid="inline-error">{showInvalidLogin}</div>)}
         <div className="form-group">
           <label htmlFor="username">Username:</label>
           <input

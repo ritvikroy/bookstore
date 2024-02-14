@@ -1,13 +1,24 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen,act, waitFor } from "@testing-library/react";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import SignIn from "./SignIn";
 
 const mockHistoryPush = jest.fn();
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+
+const mockHistory = {
+  push: mockHistoryPush,
+};
+
+jest.mock("react-router", () => {
+  const originalModule = jest.requireActual("react-router");
+  return {
+    ...originalModule,
+    useHistory: () => mockHistory,
+  };
+});
+
+var mock = new MockAdapter(axios);
+const data = { response: true };
 
 describe("Sign In", () => {
   it("should have sign in page", () => {
@@ -66,15 +77,33 @@ describe("Sign In", () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it("should call handleSubmit when username and password submitted", () => {
+  it("should call handleSubmit when username and password submitted",async () => {
+    mock.onPost("http://localhost:8080/v1/api/signin").reply(200, data);
     render(<SignIn />);
     const userNameInput = screen.getByTestId("username-input");
     fireEvent.change(userNameInput, { target: { value: "tushar" } });
     const passwordInput = screen.getByTestId("password-input");
     fireEvent.change(passwordInput, { target: { value: "tushar" } });
     const submitButton = screen.getByTestId("submit-btn");
-    fireEvent.click(submitButton);
-    expect(userNameInput).toHaveValue("");
-    expect(passwordInput).toHaveValue("");
+    await waitFor(async()=>{
+        await fireEvent.click(submitButton);
+    })
+    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    expect(mockHistoryPush).toHaveBeenCalledWith("/books");
+  });
+
+  it("should show inline error messgae when user is unauthorized",async()=>{
+    mock.onPost("http://localhost:8080/v1/api/signin").reply(401, {});
+    render(<SignIn />);
+    const userNameInput = screen.getByTestId("username-input");
+    fireEvent.change(userNameInput, { target: { value: "tushar" } });
+    const passwordInput = screen.getByTestId("password-input");
+    fireEvent.change(passwordInput, { target: { value: "tushar" } });
+    const submitButton = screen.getByTestId("submit-btn");
+    await waitFor(async()=>{
+        await fireEvent.click(submitButton);
+        const linkElement = screen.getByTestId("inline-error");
+        expect(linkElement).toBeInTheDocument();
+    });
   });
 });
