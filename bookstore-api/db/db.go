@@ -13,7 +13,7 @@ import (
 
 func InitDb(ctxt context.Context ) (*sql.Conn, error) {
 
-	dbConnection, dbError := DbConnection(ctxt)
+	dbConnection, dbError := DbConnection()
 	if dbError != nil {
 		return nil, dbError
 	}
@@ -25,7 +25,7 @@ func InitDb(ctxt context.Context ) (*sql.Conn, error) {
 	return dbConection, nil
 }
 
-func DbConnection(ctxt context.Context) (*sql.DB, error) {
+func DbConnection() (*sql.DB, error) {
 	dbOpen, dbOpenErr := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/bookstore?sslmode=disable")
 	if dbOpenErr != nil {
 		fmt.Println("dbOpenErr is", dbOpenErr)
@@ -36,7 +36,7 @@ func DbConnection(ctxt context.Context) (*sql.DB, error) {
 }
 
 func Migrations(ctxt context.Context) error {
-	dbConnection, dbError := DbConnection(ctxt)
+	dbConnection, dbError := DbConnection()
 	if dbError != nil {
 		return dbError
 	}

@@ -2,23 +2,33 @@ package router
 
 import (
 	"bookstore-api/controllers"
+	"bookstore-api/repository"
 	"bookstore-api/service"
+	"database/sql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAllRoutes() *gin.Engine {
+func RegisterAllRoutes(db *sql.DB, appEngine *gin.Engine) *gin.Engine {
+	userService := service.NewUserService()
 	signInService := service.NewSignInService()
-	appEngine := gin.Default()
-	authRoutes := appEngine.Group("v1")
-	{
-		authRoutes.Use(middlewareFunc)
-		signInController := controllers.NewSignInController(signInService)
+	fmt.Println("request -----")
+	// appEngine := gin.Default()
+	// authRoutes := appEngine.Group("/v1")
+	//{
 
-		authRoutes.POST("/api/signin", signInController.HandleSignIn)
+	userController := controllers.NewUser(userService)
+	signInController := controllers.NewSignInController(signInService)
+	bookRepository := repository.NewBooksRepository(db)
+	booksService := service.NewBooksService(bookRepository)
+	booksStoreController := controllers.NewGetAllBooks(booksService)
 
-	}
+	appEngine.GET("/:id", userController.GetUserById)
+	appEngine.POST("/api/signin", signInController.HandleSignIn)
+	appEngine.GET("/api/books", booksStoreController.GetAllBooks)
+
+	//}
 
 	profileRoute := appEngine.Group("profile")
 	{
