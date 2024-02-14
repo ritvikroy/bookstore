@@ -28,7 +28,7 @@ jobs:
         - name: run test
           working-directory: ./frontend
           run: |
-            npm run coverage
+            npm run coverage >> $GITHUB_STEP_SUMMARY
 
   build:
     needs: frontend-build
