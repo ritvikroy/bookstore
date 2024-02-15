@@ -1,13 +1,16 @@
-import React from 'react';
-import { useHistory } from 'react-router';
-import {ListOfBooks}  from './ListOfBooks';
-import './BooksList.css';
+import React from "react";
+import { useHistory } from "react-router";
+import "./BooksList.css";
 
-const BooksList = () => {
+const BooksList = ({ booksList }) => {
   const history = useHistory();
+  console.log(">>>", booksList);
 
   const handleBuy = (book) => {
-    history.push('/orderConfirmation',{book, isOrderPlaced: Math.random() > 0.5 ? true : false});
+    history.push("/orderConfirmation", {
+      book,
+      isOrderPlaced: Math.random() > 0.5 ? true : false,
+    });
   };
 
   return (
@@ -21,12 +24,18 @@ const BooksList = () => {
           </tr>
         </thead>
         <tbody>
-          {ListOfBooks.map(book => (
+          {booksList.map((book) => (
             <tr key={book.id}>
               <td>{book.name}</td>
               <td>&#8377;{book.price}</td>
               <td>
-                <button data-testid={`${book.id}`} type='button' onClick={()=>handleBuy(book)}>Buy</button>
+                <button
+                  data-testid={`${book.id}`}
+                  type="button"
+                  onClick={() => handleBuy(book)}
+                >
+                  Buy
+                </button>
               </td>
             </tr>
           ))}

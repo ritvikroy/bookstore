@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router';
+import { useHistory } from "react-router";
 import axios from "axios";
 import "./SignIn.css";
 
@@ -21,15 +21,17 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    loginCall().then((response)=>{
-      history.push("/books");
-    }).catch(()=>{
-      setShowInvalidLogin("User is Unauthorized");
-    });
+    loginCall()
+      .then((response) => {
+        history.push("/home");
+      })
+      .catch(() => {
+        setShowInvalidLogin("User is Unauthorized");
+      });
   };
 
   const loginCall = async () => {
-    return axios.post("http://localhost:8080/v1/api/signin", {
+    return axios.post("http://localhost:8080/api/signin", {
       username: username,
       password: password,
     });
@@ -38,11 +40,16 @@ const SignIn = () => {
   return (
     <div className="signin-container" data-testid="sign-in">
       <form className="signin-form" onSubmit={handleSubmit}>
-        {showInvalidLogin && (<div className="inline-error" data-testid="inline-error">{showInvalidLogin}</div>)}
+        {showInvalidLogin && (
+          <div className="inline-error" data-testid="inline-error">
+            {showInvalidLogin}
+          </div>
+        )}
         <div className="form-group">
           <label htmlFor="username">Username:</label>
           <input
             type="text"
+            className="sign-in-input"
             id="username"
             name="username"
             data-testid="username-input"
@@ -53,6 +60,7 @@ const SignIn = () => {
         <div className="form-group">
           <label htmlFor="password">Password:</label>
           <input
+            className="sign-in-input"
             type="password"
             id="password"
             name="password"
@@ -61,7 +69,12 @@ const SignIn = () => {
             onChange={handleInputChange}
           />
         </div>
-        <button type="submit" disabled={!username || !password} data-testid="submit-btn" style={{opacity: !username || !password ? "0.5": "1"}}>
+        <button
+          type="submit"
+          disabled={!username || !password}
+          data-testid="submit-btn"
+          style={{ opacity: !username || !password ? "0.5" : "1" }}
+        >
           Sign In
         </button>
       </form>

@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.search-bar-input {
+  border: 2px solid black;
+  border-radius: 40px;
+  width: 600px;
+  padding: 5px;
+}
+.search-button {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  margin-left: 10px;
+  border-radius: 40px;
+  transition: background-color 0.3s ease;
+  width: 100px;
+}
+.home-button:hover {
+  background-color: #0056b3;
+}

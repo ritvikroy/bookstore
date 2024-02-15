@@ -34,6 +34,6 @@ describe("Order Confirmation", ()=>{
         const linkElement = screen.getByTestId("home-button");
         fireEvent.click(linkElement);
         expect(mockHistoryPush).toHaveBeenCalledTimes(1);
-        expect(mockHistoryPush).toHaveBeenCalledWith("/books");
+        expect(mockHistoryPush).toHaveBeenCalledWith("/home");
     });
 });
