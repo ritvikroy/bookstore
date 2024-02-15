@@ -69,13 +69,13 @@ func (b booksController) BuyBook(ctx *gin.Context) {
 		return
 	}
 
-	err := b.service.BuyBook(buyBookRequest)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-		return
-	}
+	//err := b.service.BuyBook(buyBookRequest)
+	//if err != nil {
+	//	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+	//	return
+	//}
 
-	ctx.JSON(http.StatusOK)
+	ctx.Status(http.StatusOK)
 }
 func checkingPazeSizeAndPageNumber(parameter string) (int, error) {
 	if parameter != "" {
