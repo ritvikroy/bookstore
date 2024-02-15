@@ -20,6 +20,13 @@ jobs:
           with:
             node-version: "16.14.0"
             cache: "npm"
+  
+        - name: npm install & build
+          working-directory: ./frontend
+          run: |
+            npm ci
+            npm run build
+            
         - name: run test
           working-directory: ./frontend
           run: |
