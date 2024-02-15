@@ -26,7 +26,7 @@ jobs:
           run: |
             npm ci
             npm run build
-            
+
         - name: run test
           working-directory: ./frontend
           run: |
@@ -59,6 +59,8 @@ jobs:
     needs : [frontend-build,backend-build]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      
       - name: Use node 16.14.0
         uses: actions/setup-node@v4
         with:
