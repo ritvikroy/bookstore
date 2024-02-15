@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"bookstore-api/model"
 	"bookstore-api/service"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -25,28 +27,32 @@ func NewGetAllBooks(service service.BookStoreService) BooksController {
 }
 
 func (b booksController) GetAllBooks(ctx *gin.Context) {
-	var pageNumInt, pageSizeInt int
+	var pageNumInt int
 	var err error
 	searchQuery, _ := ctx.GetQuery("searchText")
-	pageSize, _ := ctx.GetQuery("page_size")
-	pageNum, _ := ctx.GetQuery("page_num")
-	fmt.Println(pageNum, pageSize)
-	if pageSize != "" {
-		pageSizeInt, err = strconv.Atoi(pageSize)
-		if err != nil {
-			fmt.Println("error converting  pageSizeInt string to int")
-			return
-		}
+	limit, _ := ctx.GetQuery("limit")
+	pageNum, _ := ctx.GetQuery("pageNum")
+	fmt.Println(searchQuery, limit, pageNum)
+
+	limitInt, limitIntErr := checkingPazeSizeAndPageNumber(limit)
+	if limitIntErr != nil {
+		fmt.Println("error converting  pageSizeInt string to int")
+		return
 	}
-	if pageNum != "" {
-		pageNumInt, err = strconv.Atoi(pageNum)
-		if err != nil {
-			fmt.Println("error converting pageNum string to int")
-			return
-		}
+	// if pageNum != "" {
+	// 	pageNumInt, err = strconv.Atoi(pageNum)
+	// 	if err != nil {
+	// 		fmt.Println("error converting pageNum string to int")
+	// 		return
+	// 	}
+	// }
+	pageNumInt, pageNumIntErr := checkingPazeSizeAndPageNumber(pageNum)
+	if pageNumIntErr != nil {
+		fmt.Println("error converting  pageSizeInt string to int")
+		return
 	}
 	fmt.Println("Method: Controller : GetAllBooks")
-	allBooks,err:= b.service.GetAllBooks(ctx, searchQuery, pageSizeInt, pageNumInt)
+	allBooks, err := b.service.GetAllBooks(ctx, searchQuery, limitInt, pageNumInt)
 	if err != nil {
 		fmt.Printf("error occured : %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
@@ -70,4 +76,15 @@ func (b booksController) BuyBook(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK)
+}
+func checkingPazeSizeAndPageNumber(parameter string) (int, error) {
+	if parameter != "" {
+		parameterInt, err := strconv.Atoi(parameter)
+		if err != nil {
+			fmt.Println("error converting  pageSizeInt string to int", err)
+			return 0, errors.New("error in parsing the parameter")
+		}
+		return parameterInt, nil
+	}
+	return 0, nil
 }

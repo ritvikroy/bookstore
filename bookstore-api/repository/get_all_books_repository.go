@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 type bookStoreRepository struct {
@@ -23,7 +24,11 @@ func NewBooksRepository(dbConnection *sql.DB) BookStoreRepository {
 const (
 	GetAllBooks    = `select * from books`
 	SearchBookText = `like '%' || $1 || '%'`
-	paginatedBooks = ` limit $1 `
+	limitBooks     = ` limit `
+	offsetBooks    = ` offset `
+	firstArgument  = `$1`
+	secondArgument = `$2`
+	thirdArgument  = `$3`
 )
 
 func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books, error) {
@@ -31,14 +36,19 @@ func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string
 	var rows *sql.Rows
 	var err error
 	var books = make([]model.Books, 0)
-	if searchText != "" {
-		rows, err = b.dbConnection.Query(GetAllBooks+" where name "+SearchBookText, searchText)
-	} else if pageSize != 0 {
-		rows, err = b.dbConnection.Query(paginatedBooks, pageSize)
-	} else {
-		rows, err = b.dbConnection.Query(GetAllBooks)
+	if pageNum == 0 {
+		pageNum = 0
 	}
+	if pageSize == 0 {
+		pageSize = 10
+	}
+	if searchText != "" {
+		searchText = strings.ToLower(searchText)
+		rows, err = b.dbConnection.Query(GetAllBooks+" where name "+SearchBookText+limitBooks+secondArgument+offsetBooks+thirdArgument, searchText, pageSize, pageNum)
+	} else {
 
+		rows, err = b.dbConnection.Query(GetAllBooks+limitBooks+firstArgument+offsetBooks+secondArgument, pageSize, pageNum)
+	}
 	if err != nil {
 		fmt.Println("Error in getting the row", err)
 	}
