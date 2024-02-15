@@ -15,6 +15,7 @@ type booksController struct {
 
 type BooksController interface {
 	GetAllBooks(ctx *gin.Context)
+	BuyBook(ctx *gin.Context)
 }
 
 func NewGetAllBooks(service service.BookStoreService) BooksController {
@@ -53,4 +54,20 @@ func (b booksController) GetAllBooks(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, allBooks)
+}
+
+func (b booksController) BuyBook(ctx *gin.Context) {
+	var buyBookRequest model.BuyBookRequest
+	if err := ctx.ShouldBindJSON(&buyBookRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid buy book input data"})
+		return
+	}
+
+	err := b.service.BuyBook(buyBookRequest)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK)
 }

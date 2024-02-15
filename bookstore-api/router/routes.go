@@ -19,6 +19,8 @@ func RegisterAllRoutes(db *sql.DB, appEngine *gin.Engine) *gin.Engine {
 
 	appEngine.POST("/api/signin", signInController.HandleSignIn)
 	appEngine.GET("/api/books", booksStoreController.GetAllBooks)
+	appEngine.POST("/api/buy-book", booksStoreController.BuyBook)
+	
 	return appEngine
 }
 
