@@ -85,7 +85,7 @@ jobs:
         run: chmod 777 bookstore-api/bookstore-api
         
       - name: 'Make tar file'
-        run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api frontend/build
+        run: tar -cvf bookstore-api.tar bookstore-api/bookstore-api frontend/build bookstore-api/migrations
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
