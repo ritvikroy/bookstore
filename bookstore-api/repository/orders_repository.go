@@ -24,7 +24,8 @@ func NewOrderRepository(db *sql.DB) OrdersRepository {
 }
 
 const (
-	CreateOrder = `insert into orders (userId, bookId, ordervalue, quantity) values($1, $2, $3, $4)`
+	CreateOrderQuery = `insert into orders (userId, bookId, order_value, quantity) values($1, $2, $3, $4)`
+	LastInsertedQuery = `select max(orderid) from orders`
 )
 
 func (b ordersRepository) CreateOrder(ctx context.Context, bookId, orderValue string, orderQty, updatedCount int) (orderID string, err error) {
@@ -44,14 +45,17 @@ func (b ordersRepository) CreateOrder(ctx context.Context, bookId, orderValue st
 	}
 
 	userId := 1
-	result, err := tx.ExecContext(ctx, CreateOrder, userId, bookId, orderValue, orderQty)
+	_, err = tx.ExecContext(ctx, CreateOrderQuery, userId, bookId, orderValue, orderQty)
 	if err != nil {
 		return fail(err)
 	}
-	id, err := result.LastInsertId()
+
+	latestId := tx.QueryRow(LastInsertedQuery)
 	if err != nil {
 		return fail(err)
 	}
+	var id string
+	fmt.Println("result, ",latestId.Scan(&id))
 	if err = tx.Commit(); err != nil {
 		return fail(err)
 	}

@@ -19,9 +19,10 @@ type BookStoreService interface {
 	BuyBook(ctx context.Context, buyBookReq model.BuyBookRequest) (string, error)
 }
 
-func NewBooksService(repo repository.BookStoreRepository) BookStoreService {
+func NewBooksService(repo repository.BookStoreRepository,ordersRepo repository.OrdersRepository) BookStoreService {
 	return &bookstoreService{
 		repository: repo,
+		ordersRepo: ordersRepo,
 	}
 }
 
@@ -38,7 +39,8 @@ func (b *bookstoreService) BuyBook(ctx context.Context, buyBookReq model.BuyBook
 	fmt.Println("Method:BuyBook, Class:bookstoreService")
 	bookDetails, err := b.repository.GetBookById(ctx, buyBookReq.BookId)
 	if err != nil {
-		return "", errors.New("some error occured")
+		fmt.Println("error -- ",err )
+		return "", errors.New(err.Error())
 	}
 	//check book quantity exist
 	if bookDetails.Quantity < buyBookReq.Quantity {

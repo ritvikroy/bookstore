@@ -32,7 +32,7 @@ const (
 	secondArgument = `$2`
 	thirdArgument  = `$3`
 
-	GetBookById = `select * from books where id = $1`
+	GetBookByIdQuery = "select * from books where id = $1"
 	UpdateInventory = `update books set quantity= $1 where id= $2`
 )
 
@@ -63,7 +63,6 @@ func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string
 
 	for rows.Next() {
 		book := model.Books{}
-		
 		scanError := rows.Scan(&book.Id, &book.Name, &book.Price, &book.Description, &book.Quantity)
 		if scanError != nil {
 			fmt.Println("Error in getting the scanError", scanError)
@@ -74,13 +73,24 @@ func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string
 }
 
 func (b *bookStoreRepository) GetBookById(ctx context.Context, bookId string) (model.Books, error) {
-	var book model.Books
-	if err := b.dbConnection.QueryRow(GetBookById,
-        bookId).Scan(&book); err != nil {
-        if err == sql.ErrNoRows {
-            return model.Books{}, errors.New("no rows for given bookId")
-        }
-        return model.Books{}, errors.New("some error occured")
-    }
-	return book, nil
+	fmt.Println("Method: GetBookById, class:bookStoreRepository")
+	var books = make([]model.Books, 0)
+	rows, err :=b.dbConnection.Query(GetBookByIdQuery,bookId)
+	if err != nil{
+		fmt.Println("err : ", err)
+		return model.Books{}, errors.New("some error")
+	}
+	defer func() {
+		rows.Close()
+	}()
+
+	for rows.Next() {
+		book := model.Books{}
+		scanError := rows.Scan(&book.Id, &book.Name, &book.Price, &book.Description, &book.Quantity)
+		if scanError != nil {
+			fmt.Println("Error in getting the scanError", scanError)
+		}
+		books = append(books, book)
+	}
+	return books[0], nil
 }

@@ -1,0 +1,1 @@
+CREATE TABLE orders ( orderid SERIAL PRIMARY KEY, userid INT, bookid INT, order_value DECIMAL(10,2), quantity INT, status VARCHAR(20), FOREIGN KEY (userid) REFERENCES users(id), FOREIGN KEY (bookid) REFERENCES books(id) );

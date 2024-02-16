@@ -16,8 +16,9 @@ func RegisterAllRoutes(db *sql.DB, appEngine *gin.Engine) *gin.Engine {
 	signInService := service.NewSignInService()
 	signInController := controllers.NewSignInController(signInService)
 	bookRepository := repository.NewBooksRepository(db)
-	booksService := service.NewBooksService(bookRepository)
-	booksStoreController := controllers.NewGetAllBooks(booksService)
+	orderRepo := repository.NewOrderRepository(db)
+	booksService := service.NewBooksService(bookRepository,orderRepo)
+	booksStoreController := controllers.NewBooksController(booksService)
 
 	appEngine.POST("/api/signin", signInController.HandleSignIn)
 	apiRouter := appEngine.Group("/api")
@@ -26,7 +27,7 @@ func RegisterAllRoutes(db *sql.DB, appEngine *gin.Engine) *gin.Engine {
 		{
 			apiRouter.Use(middlewareFunc)
 			authRouter.GET("/books", booksStoreController.GetAllBooks)
-			authRouter.POST("/buy-book", booksStoreController.BuyBook)
+			authRouter.POST("/order/book", booksStoreController.BuyBook)
 		}
 	}
 

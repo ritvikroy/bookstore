@@ -20,7 +20,7 @@ type BooksController interface {
 	BuyBook(ctx *gin.Context)
 }
 
-func NewGetAllBooks(service service.BookStoreService) BooksController {
+func NewBooksController(service service.BookStoreService) BooksController {
 	return booksController{
 		service: service,
 	}
@@ -73,7 +73,9 @@ func (b booksController) BuyBook(ctx *gin.Context) {
 
 	orderId, err := b.service.BuyBook(ctx, buyBookRequest)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errors.New("order failed"))
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
