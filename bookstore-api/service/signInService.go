@@ -37,6 +37,6 @@ func (ss *SignInService) generateToken(request model.SignInRequest) (string, err
 		return "", errors.New("Invalid request for token generation")
 	}
 
-	token := base64.StdEncoding.EncodeToString([]byte(request.Username + request.Password))
+	token := base64.StdEncoding.EncodeToString([]byte(request.Username+ "--"+ request.Password +"--"+ "1" ))
 	return token, nil
 }

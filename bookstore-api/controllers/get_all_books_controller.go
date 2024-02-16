@@ -63,20 +63,25 @@ func (b booksController) GetAllBooks(ctx *gin.Context) {
 }
 
 func (b booksController) BuyBook(ctx *gin.Context) {
+	fmt.Println("Method:BuyBook, Class:booksController")
 	var buyBookRequest model.BuyBookRequest
 	if err := ctx.ShouldBindJSON(&buyBookRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid buy book input data"})
+		fmt.Println("error occured")
+		ctx.JSON(http.StatusBadRequest, errors.New("invalid buy book input data"))
 		return
 	}
 
-	//err := b.service.BuyBook(buyBookRequest)
-	//if err != nil {
-	//	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-	//	return
-	//}
+	orderId, err := b.service.BuyBook(ctx, buyBookRequest)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errors.New("order failed"))
+		return
+	}
 
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, model.OrderResponse{
+		OrderId: orderId,
+	})
 }
+
 func checkingPazeSizeAndPageNumber(parameter string) (int, error) {
 	if parameter != "" {
 		parameterInt, err := strconv.Atoi(parameter)

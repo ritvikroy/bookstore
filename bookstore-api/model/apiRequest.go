@@ -6,5 +6,10 @@ type SignInRequest struct {
 }
 
 type BuyBookRequest struct {
-	Id string `json:"id" binding:"required"`
+	BookId   string `json:"id" binding:"required"`
+	Quantity int    `json:"quantity" binding:"required"`
+}
+
+type OrderResponse struct{
+	OrderId string `json:"orderId"`
 }

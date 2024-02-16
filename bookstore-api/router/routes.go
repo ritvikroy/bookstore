@@ -5,7 +5,9 @@ import (
 	"bookstore-api/repository"
 	"bookstore-api/service"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,14 +20,24 @@ func RegisterAllRoutes(db *sql.DB, appEngine *gin.Engine) *gin.Engine {
 	booksStoreController := controllers.NewGetAllBooks(booksService)
 
 	appEngine.POST("/api/signin", signInController.HandleSignIn)
-	appEngine.GET("/api/books", booksStoreController.GetAllBooks)
-	appEngine.POST("/api/buy-book", booksStoreController.BuyBook)
-	
+	apiRouter := appEngine.Group("/api")
+	{
+		authRouter := apiRouter.Group("/auth")
+		{
+			apiRouter.Use(middlewareFunc)
+			authRouter.GET("/books", booksStoreController.GetAllBooks)
+			authRouter.POST("/buy-book", booksStoreController.BuyBook)
+		}
+	}
+
 	return appEngine
 }
 
 func middlewareFunc(c *gin.Context) {
-	fmt.Println("middleware")
+	values := c.Request.Header["Denvar"]
+	sDec, _ := base64.StdEncoding.DecodeString(values[0])
+	fmt.Println("userId: " ,strings.SplitAfter(string(sDec), "--")[2])
 
+	c.Set("userId",strings.SplitAfter(string(sDec), "--")[2])
 	c.Next()
 }

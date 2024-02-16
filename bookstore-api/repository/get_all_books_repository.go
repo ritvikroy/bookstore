@@ -4,6 +4,7 @@ import (
 	"bookstore-api/model"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -12,7 +13,8 @@ type bookStoreRepository struct {
 	dbConnection *sql.DB
 }
 type BookStoreRepository interface {
-	GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books,error)
+	GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books, error)
+	GetBookById(ctx context.Context, bookId string) (model.Books, error) 
 }
 
 func NewBooksRepository(dbConnection *sql.DB) BookStoreRepository {
@@ -29,10 +31,12 @@ const (
 	firstArgument  = `$1`
 	secondArgument = `$2`
 	thirdArgument  = `$3`
+
+	GetBookById = `select * from books where id = $1`
+	UpdateInventory = `update books set quantity= $1 where id= $2`
 )
 
 func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string, pageSize, pageNum int) ([]model.Books, error) {
-	fmt.Println(" ----- bookStoreRepository", searchText)
 	var rows *sql.Rows
 	var err error
 	var books = make([]model.Books, 0)
@@ -59,12 +63,24 @@ func (b *bookStoreRepository) GetAllBooks(ctx context.Context, searchText string
 
 	for rows.Next() {
 		book := model.Books{}
-		fmt.Println(" ----- ", rows)
-		scanError := rows.Scan(&book.Id, &book.Name, &book.Price, &book.Description)
+		
+		scanError := rows.Scan(&book.Id, &book.Name, &book.Price, &book.Description, &book.Quantity)
 		if scanError != nil {
 			fmt.Println("Error in getting the scanError", scanError)
 		}
 		books = append(books, book)
 	}
-	return books,nil
+	return books, nil
+}
+
+func (b *bookStoreRepository) GetBookById(ctx context.Context, bookId string) (model.Books, error) {
+	var book model.Books
+	if err := b.dbConnection.QueryRow(GetBookById,
+        bookId).Scan(&book); err != nil {
+        if err == sql.ErrNoRows {
+            return model.Books{}, errors.New("no rows for given bookId")
+        }
+        return model.Books{}, errors.New("some error occured")
+    }
+	return book, nil
 }
