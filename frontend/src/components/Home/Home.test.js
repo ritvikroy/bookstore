@@ -8,7 +8,7 @@ const mock = new MockAdapter(axios);
 
 describe("Search Bar", () => {
   it("Should render Search Bar", () => {
-    mock.onGet("http://localhost:8080/api/books").reply(200, {});
+    mock.onGet("http://localhost:8080/api/auth/books").reply(200, {});
     render(<Home />);
     const linkElement = screen.getByTestId("search-bar");
     expect(linkElement).toBeInTheDocument();
@@ -16,7 +16,7 @@ describe("Search Bar", () => {
 
   it("Should use data from books api", async () => {
     mock
-      .onGet("http://localhost:8080/api/books")
+      .onGet("http://localhost:8080/api/auth/books")
       .reply(200, { books: ListOfBooks });
 
     await waitFor(async () => {
@@ -28,7 +28,7 @@ describe("Search Bar", () => {
 
   it("Should get data for searched text from books api", async () => {
     mock
-      .onGet("http://localhost:8080/api/books?searchText=1")
+      .onGet("http://localhost:8080/api/auth/books?searchText=1")
       .reply(200, { books: [ListOfBooks[0]] });
     render(<Home />);
     const searchInput = screen.getByTestId("search-input");

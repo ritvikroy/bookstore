@@ -8,7 +8,7 @@ const Home = () => {
 
   const getBooks = (text = "") => {
     const params = text ? `?searchText=${text}` : "";
-    return axios.get("http://localhost:8080/api/books" + params);
+    return axios.get("http://localhost:8080/api/auth/books" + params);
   };
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import axios from "axios";
+import useAtomsApi from "../../hooks/useAtoms";
 import "./SignIn.css";
 
 const SignIn = () => {
@@ -8,6 +9,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [showInvalidLogin, setShowInvalidLogin] = useState();
   const history = useHistory();
+  const { setTokensData } = useAtomsApi();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +25,7 @@ const SignIn = () => {
     event.preventDefault();
     loginCall()
       .then((response) => {
+        setTokensData(response?.data);
         history.push("/home");
       })
       .catch(() => {

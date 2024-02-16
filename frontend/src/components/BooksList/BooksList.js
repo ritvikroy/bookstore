@@ -1,17 +1,39 @@
 import React from "react";
 import { useHistory } from "react-router";
 import ViewDetails from "./ViewDetails";
+import axios from "axios";
 import "./BooksList.css";
 import BOOKSTOREIMAGE from "../../assets/bookstoreicon.jpeg";
+import useAtomsApi from "../../hooks/useAtoms";
 
 const BooksList = ({ booksList }) => {
   const history = useHistory();
+  const { tokensData } = useAtomsApi();
 
   const handleBuy = (book) => {
-    history.push("/orderConfirmation", {
-      book,
-      isOrderPlaced: Math.random() > 0.5 ? true : false,
-    });
+    axios
+      .post(
+        "http://localhost:8080/api/auth/buy-book",
+        {
+          id: book.id,
+          quantity: 1,
+        },
+        {
+          headers: { denvar: tokensData.token },
+        }
+      )
+      .then((response) => {
+        history.push("/orderConfirmation", {
+          book,
+          isOrderPlaced: true,
+        });
+      })
+      .catch(() => {
+        history.push("/orderConfirmation", {
+          book,
+          isOrderPlaced: false,
+        });
+      });
   };
 
   return (

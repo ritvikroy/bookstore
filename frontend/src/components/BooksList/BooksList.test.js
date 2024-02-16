@@ -1,6 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ListOfBooks } from "./ListOfBooks";
 import BooksList from "./BooksList";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+const mock = new MockAdapter(axios);
 
 const mockHistoryPush = jest.fn();
 const mockHistory = {
@@ -21,26 +24,30 @@ describe("BookList", () => {
     expect(linkElement).toBeInTheDocument();
   });
 
-  it("should redirect to orderPlaced screen with isOrderPlaced true", () => {
+  it("should redirect to orderPlaced screen with isOrderPlaced true", async () => {
+    mock.onPost("http://localhost:8080/api/auth/buy-book").reply(200, {});
     jest.spyOn(global.Math, "random").mockReturnValue(0.7);
     render(<BooksList booksList={ListOfBooks} />);
     const linkElement = screen.getByTestId("1");
-    expect(linkElement).toBeInTheDocument();
-    fireEvent.click(linkElement);
-    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    await waitFor(async () => {
+      await fireEvent.click(linkElement);
+      expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    });
     expect(mockHistoryPush).toHaveBeenCalledWith("/orderConfirmation", {
       book: { id: 1, name: "Book 1", price: 100 },
       isOrderPlaced: true,
     });
   });
 
-  it("should redirect to orderPlaced screen with isOrderPlaced false", () => {
+  it("should redirect to orderPlaced screen with isOrderPlaced false", async () => {
+    mock.onPost("http://localhost:8080/api/auth/buy-book").reply(400, {});
     jest.spyOn(global.Math, "random").mockReturnValue(0.3);
     render(<BooksList booksList={ListOfBooks} />);
     const linkElement = screen.getByTestId("1");
-    expect(linkElement).toBeInTheDocument();
-    fireEvent.click(linkElement);
-    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    await waitFor(async () => {
+      await fireEvent.click(linkElement);
+      expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    });
     expect(mockHistoryPush).toHaveBeenCalledWith("/orderConfirmation", {
       book: { id: 1, name: "Book 1", price: 100 },
       isOrderPlaced: false,
