@@ -46,4 +46,14 @@ describe("BookList", () => {
       isOrderPlaced: false,
     });
   });
+
+  it("should show book details", () => {
+    render(<BooksList booksList={ListOfBooks} />);
+    const viewDetailsButton = screen.getByTestId("1-details");
+    fireEvent.click(viewDetailsButton);
+    const bookDesc = screen.getByTestId("1-desc");
+    expect(bookDesc).toBeInTheDocument();
+    fireEvent.click(viewDetailsButton);
+    expect(bookDesc).not.toBeInTheDocument();
+  });
 });
