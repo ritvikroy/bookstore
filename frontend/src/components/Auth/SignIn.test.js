@@ -77,7 +77,7 @@ describe("Sign In", () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it("should call handleSubmit when username and password submitted", async () => {
+  it("should call handleSubmit when username and password submitted and api returns success", async () => {
     mock.onPost("http://localhost:8080/api/signin").reply(200, data);
     render(<SignIn />);
     const userNameInput = screen.getByTestId("username-input");

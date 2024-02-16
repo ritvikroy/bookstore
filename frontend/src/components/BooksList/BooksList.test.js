@@ -26,7 +26,6 @@ describe("BookList", () => {
 
   it("should redirect to orderPlaced screen with isOrderPlaced true", async () => {
     mock.onPost("http://localhost:8080/api/auth/buy-book").reply(200, {});
-    jest.spyOn(global.Math, "random").mockReturnValue(0.7);
     render(<BooksList booksList={ListOfBooks} />);
     const linkElement = screen.getByTestId("1");
     await waitFor(async () => {
@@ -41,7 +40,6 @@ describe("BookList", () => {
 
   it("should redirect to orderPlaced screen with isOrderPlaced false", async () => {
     mock.onPost("http://localhost:8080/api/auth/buy-book").reply(400, {});
-    jest.spyOn(global.Math, "random").mockReturnValue(0.3);
     render(<BooksList booksList={ListOfBooks} />);
     const linkElement = screen.getByTestId("1");
     await waitFor(async () => {
@@ -54,12 +52,21 @@ describe("BookList", () => {
     });
   });
 
-  it("should show book details", () => {
+  it("should show book details on click of desc", () => {
     render(<BooksList booksList={ListOfBooks} />);
     const viewDetailsButton = screen.getByTestId("1-details");
     fireEvent.click(viewDetailsButton);
     const bookDesc = screen.getByTestId("1-desc");
     expect(bookDesc).toBeInTheDocument();
+    fireEvent.click(viewDetailsButton);
+    expect(bookDesc).not.toBeInTheDocument();
+  });
+
+  it("should not show book details on click of desc 2 times", () => {
+    render(<BooksList booksList={ListOfBooks} />);
+    const viewDetailsButton = screen.getByTestId("1-details");
+    fireEvent.click(viewDetailsButton);
+    const bookDesc = screen.getByTestId("1-desc");
     fireEvent.click(viewDetailsButton);
     expect(bookDesc).not.toBeInTheDocument();
   });
